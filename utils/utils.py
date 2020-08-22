@@ -1,5 +1,5 @@
 import os, sys, platform
-import json
+import json, re
 
 def os_info():
     osinfo = dict()
@@ -12,16 +12,16 @@ def os_info():
     osinfo['platform.processor'] = platform.processor()
     return osinfo
 
-def print_exception_info(e, applog=logger, raise_again=True):
+def print_exception_info(e, applog, raise_again=True):
     import traceback, sys
     exc_type, exc_value, exc_traceback = sys.exc_info()
     traceback.print_exception(exc_type, exc_value, exc_traceback)
     formatted = traceback.format_exception(exc_type, exc_value, exc_traceback)
-    file_info = re.sub('\n\s*', ' CODE_LINE: ', re.sub('\s*\n\s*$', '', re.sub('^\s+', '', formatted[-2])))
-    logger.error('Exception in predict.py')
+    file_info = re.sub(r'\n\s*', ' CODE_LINE: ', re.sub(r'\s*\n\s*$', '', re.sub(r'^\s+', '', formatted[-2])))
+    applog.error('Exception in predict.py')
     # logger.error('{}'.format(e.__repr__()))
-    logger.error('Exception message: {}'.format(re.sub('\n', '', formatted[-1])))
-    logger.error('{}'.format(file_info))
+    applog.error('Exception message: {}'.format(re.sub('\n', '', formatted[-1])))
+    applog.error('{}'.format(file_info))
     if raise_again:
         raise Exception(exc_value)
 
