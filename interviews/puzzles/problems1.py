@@ -60,5 +60,16 @@ def four_num_sum(nums, sum):
         elif(addn([l1, l2, r1, r2]) > sum):
             r2 -= 1
 
-two_num_sum([3, 5, -4, 8, 11, 1, -1, 6], 8)
-four_num_sum([7, 6, 4, 1, -1, 2], 16)
+# two_num_sum([3, 5, -4, 8, 11, 1, -1, 6], 8)
+# four_num_sum([7, 6, 4, 1, -1, 2], 16)
+import numpy as np
+
+na = np.ones((1, 5))
+x1 = np.random.randint(10, size=(1, 4))
+x2 = np.random.randint(10, size=(3, 4))
+r, c = x2.shape
+print(x1, x1.shape)
+print(na, na.shape)
+for cr in range(r):
+    print(x2[cr:cr+1, :])
+
