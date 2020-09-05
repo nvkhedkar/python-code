@@ -35,11 +35,13 @@ dataiter = iter(trainloader)
 images, labels = dataiter.next()
 
 # show images
-imshow(torchvision.utils.make_grid(images))
+# imshow(torchvision.utils.make_grid(images))
 # print labels
 print(' '.join('%5s' % classes[labels[j]] for j in range(4)))
 
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(device)
 import torch.nn as nn
 import torch.nn.functional as F
 
@@ -63,19 +65,21 @@ class Net(nn.Module):
         return x
 
 net = Net()
-
+net.to(device)
 
 import torch.optim as optim
-
+from datetime import datetime, timedelta
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.001, momentum=0.9)
 
+start_time = datetime.utcnow()
 for epoch in range(2):  # loop over the dataset multiple times
 
     running_loss = 0.0
     for i, data in enumerate(trainloader, 0):
+        itr_start_time = datetime.utcnow()
         # get the inputs; data is a list of [inputs, labels]
-        inputs, labels = data
+        inputs, labels = data[0].to(device), data[1].to(device)
 
         # zero the parameter gradients
         optimizer.zero_grad()
@@ -89,10 +93,13 @@ for epoch in range(2):  # loop over the dataset multiple times
         # print statistics
         running_loss += loss.item()
         if i % 2000 == 1999:    # print every 2000 mini-batches
-            print('[%d, %5d] loss: %.3f' %
-                  (epoch + 1, i + 1, running_loss / 2000))
+            print('[%d, %5d] loss: %.3f time: %s' %
+                  (epoch + 1, i + 1, running_loss / 2000, str(datetime.utcnow() - start_time)))
             running_loss = 0.0
 
+# end_time = datetime.utcnow()
+# time_required = start_time - end_time
+print("Final time", str(datetime.utcnow() - start_time))
 print('Finished Training')
 
 PATH = './cifar_net.pth'
