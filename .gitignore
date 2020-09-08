@@ -1,3 +1,5 @@
+.vscode/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -132,3 +134,4 @@ dmypy.json
 #Nikhil 
 data/
 .idea/
+.vscode/settings.json
