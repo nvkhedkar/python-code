@@ -5,9 +5,11 @@ import mimetypes
 import getopt
 import argparse
 
+
 class LogArgumentParser(argparse.ArgumentParser):
   def error(self, msg):
     sys.exit(1)
+
 
 parser = LogArgumentParser()
 
