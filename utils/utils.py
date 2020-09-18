@@ -105,3 +105,25 @@ def exec_shell_realtime_simple(cmd, cwd, applog, separator=' ; ', timeout=-1, sh
             break
 
     return p, outlines, stat
+
+
+def get_directory_size(start_path = '.'):
+    '''
+    Returns directory size in bytes
+    '''
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            # skip if it is symbolic link
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+
+    return total_size
+
+def get_disk_usage(path='/'):
+    import shutil
+    total, used, free = shutil.disk_usage(path)
+    print(f'Total: {total / (1024 * 1024 * 1024)}GB')
+    print(f'Used: {used / (1024 * 1024 * 1024)}GB')
+    print(f'free: {free / (1024 * 1024 * 1024)}GB')
