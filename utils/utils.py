@@ -74,11 +74,13 @@ def set_custom_logging(log_level_num:int, log_function_name:str, log_function):
     return
 
 
-def exec_shell_realtime_simple(cmd, cwd, applog, timeout=-1, shl='/bin/bash'):
+def exec_shell_realtime_simple(cmd, cwd, applog, separator=' ; ', timeout=-1, shl='/bin/bash'):
     '''
-    for windows shl="c:/Windows/system32/cmd.exe"
+    for windows:
+        shl="c:/Windows/system32/cmd.exe"
+        separator=" & "
     '''
-    def kill_process_with_childs(parent_pid):
+    def kill_process_with_children(parent_pid):
         import psutil
         # parent_pid = 30437   # my example
         applog.info('Kill process with pid {}'.format(parent_pid))
@@ -105,7 +107,8 @@ def exec_shell_realtime_simple(cmd, cwd, applog, timeout=-1, shl='/bin/bash'):
     applog.info('exec_shell_realtime_simple')
     applog.info('shell {}'.format(shl))
     start_time = datetime.utcnow()
-    p = Popen(';'.join(cmd),  # ['echo Nikhil ; cd /trusolid ; ls ; pwd'],
+    
+    p = Popen(separator.join(cmd),  # ['echo Nikhil ; cd /trusolid ; ls ; pwd'],
             stdout=PIPE, stderr=STDOUT,
             # env=new_env,
             executable=shl,
@@ -122,7 +125,7 @@ def exec_shell_realtime_simple(cmd, cwd, applog, timeout=-1, shl='/bin/bash'):
         if 'Process Finished' not in line:
             outlines.append(line)
         if time_delta.total_seconds() >= timeout:
-            kill_process_with_childs(p.pid)
+            kill_process_with_children(p.pid)
             stat = 'timeout_reached'
             break
 
