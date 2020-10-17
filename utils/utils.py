@@ -1,8 +1,33 @@
 import datetime
-import os, sys, platform
+import os, sys, platform, stat
 import json, re
 import logging
 from subprocess import Popen, PIPE, STDOUT
+
+
+def write_json(dict_, json_file):
+    import json
+    with open(json_file, 'w') as fp:
+        json.dump(dict_, fp)
+
+
+def remove_even_readonly(full):
+    os.chmod(full, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+    os.unlink(full)
+
+
+def remove_directory(dirname):
+    import errno, os, stat, shutil
+
+    def handle_remove_read_only(func, path, exc):
+        exec_value = exc[1]
+        if func in (os.rmdir, os.unlink, os.remove) and exec_value.errno == errno.EACCES:
+            os.chmod(path, stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)  # 0777
+            func(path)
+        else:
+            raise
+
+    shutil.rmtree(dirname, ignore_errors=False, onerror=handle_remove_read_only)
 
 
 def os_info():
