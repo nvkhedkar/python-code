@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import sys
 
 
 class PolynomialBuilder:
@@ -25,12 +26,8 @@ def get_sign(neg):
     return -1 if neg and np.random.randint(0, 2) else 1
 
 
-def get_random_no(neg=0):
-    return get_sign(neg) * float(np.random.randint(0, 3) + 1)
-    if np.random.randint(0, 2):
-        return get_sign(neg) * float(np.random.randint(0, 3) + 1)
-    else:
-        return get_sign(neg) * float(np.random.randint(0, 10000)) / 10000.
+def get_random_no(l=0, h=3, neg=0):
+    return get_sign(neg) * (float(np.random.randint(l*1000, h*1000)) / 1000.0)
 
 
 def get_value(x, coef, pow, adj):
@@ -42,15 +39,18 @@ def get_value(x, coef, pow, adj):
 
 
 n = 3
-xx = [[2, 2, 2], [3, 3, 3]]
-cc = [get_random_no() for i in range(n)]
-pp = [get_random_no(neg=1) for i in range(n)]
+xx = [[2, 2, 2], [2, 2, 2]]
+x_coefs = [get_random_no() for i in range(n)]
+x_powers = [get_random_no(neg=1) for i in range(n)]
+print(np.float_power([2.0 for i in range(6)], [i for i in range(-3, 3, 1)]))
+print(np.float_power([2.0 for i in range(20)], [float(i/10) for i in range(-10, 10, 1)]))
+sys.exit()
 adj = get_random_no(neg=1)
-
-# print(get_value(xx, cc, pp, adj))
+value = get_value(xx, x_coefs, x_powers, adj)
+print('value', value, value.shape)
 a = np.array([i for i in range(12)])
-print(a.reshape(4, 3))
-print(a.reshape(4, 3, order='F'))
-print(a.reshape(4, 3, order='A'))
+print(a.reshape(4, 3), a.shape(0), a.shape(1))
+# print(a.reshape(4, 3, order='F'))
+# print(a.reshape(4, 3, order='A'))
 import os
 # print(np.float_power(2, 2), np.float_power(2, -2))

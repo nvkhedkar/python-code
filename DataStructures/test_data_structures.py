@@ -11,8 +11,12 @@ def test_heap():
     hp.insert(17)
     hp.insert(4)
     hp.insert(22)
+    hp.insert(8)
+    hp.insert(11)
+    hp.insert(30)
     print(hp.values)
-    hp.remove()
+    val = hp.remove()
+    print(val, hp.values)
     return
 
 

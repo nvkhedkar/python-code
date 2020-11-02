@@ -5,6 +5,10 @@ class Heap:
         self.max = m
         self.size = 0
 
+    @staticmethod
+    def heapify(arr):
+        return
+
     def insert(self, value):
         if self.values.__len__() == self.max:
             return
@@ -69,3 +73,4 @@ class Heap:
                 swap_index = self.right_child_index(index)
         self.swap(index, swap_index)
         return swap_index
+
