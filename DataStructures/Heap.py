@@ -1,6 +1,6 @@
 
 class Heap:
-    def __init__(self, m=20):
+    def __init__(self, m=-1):
         self.values = list()
         self.max = m
         self.size = 0
@@ -10,7 +10,7 @@ class Heap:
         return
 
     def insert(self, value):
-        if self.values.__len__() == self.max:
+        if 0 < self.max == self.values.__len__():
             return
         self.values.append(value)
         self.size = len(self.values)
