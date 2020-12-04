@@ -146,6 +146,7 @@ def get_directory_size(start_path = '.'):
 
     return total_size
 
+
 def get_disk_usage(path='/'):
     import shutil
     total, used, free = shutil.disk_usage(path)
