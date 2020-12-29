@@ -38,19 +38,21 @@ def get_value(x, coef, pow, adj):
     return np.sum(nx, axis=1) + adj
 
 
-n = 3
-xx = [[2, 2, 2], [2, 2, 2]]
-x_coefs = [get_random_no() for i in range(n)]
-x_powers = [get_random_no(neg=1) for i in range(n)]
-print(np.float_power([2.0 for i in range(6)], [i for i in range(-3, 3, 1)]))
-print(np.float_power([2.0 for i in range(20)], [float(i/10) for i in range(-10, 10, 1)]))
-sys.exit()
-adj = get_random_no(neg=1)
-value = get_value(xx, x_coefs, x_powers, adj)
-print('value', value, value.shape)
-a = np.array([i for i in range(12)])
-print(a.reshape(4, 3), a.shape(0), a.shape(1))
-# print(a.reshape(4, 3, order='F'))
-# print(a.reshape(4, 3, order='A'))
-import os
-# print(np.float_power(2, 2), np.float_power(2, -2))
+def run_random_poly():
+    n = 3
+    xx = [[2, 2, 2], [2, 2, 2]]
+    x_coefs = [get_random_no() for i in range(n)]
+    x_powers = [get_random_no(neg=1) for i in range(n)]
+    print(np.float_power([2.0 for i in range(6)], [i for i in range(-3, 3, 1)]))
+    print(np.float_power([2.0 for i in range(20)], [float(i/10) for i in range(-10, 10, 1)]))
+    sys.exit()
+    adj = get_random_no(neg=1)
+    value = get_value(xx, x_coefs, x_powers, adj)
+    print('value', value, value.shape)
+    a = np.array([i for i in range(12)])
+    print(a.reshape(4, 3), a.shape(0), a.shape(1))
+    # print(a.reshape(4, 3, order='F'))
+    # print(a.reshape(4, 3, order='A'))
+    import os
+    # print(np.float_power(2, 2), np.float_power(2, -2))
+
