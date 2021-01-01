@@ -1,0 +1,56 @@
+{
+  "mutrate": 0.12,
+  "crossover": 1,
+  "n_pars": 2,
+  "n_offsp": 1.6,
+  "n_vars": 3,
+  "n_pool": 3,
+  "prob_par_sel": 0.8,
+  "n_gens": 20,
+  "parents": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "offspring": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "pool": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+  ],
+  "fitness_off": [
+    0.0
+  ],
+  "fitness_pool": [
+    0.0,
+    0.0,
+    0.0
+  ],
+  "fitness_pars": [
+    0.0,
+    0.0
+  ],
+  "ranges": [
+    0,
+    5,
+    6,
+    10,
+    11,
+    15
+  ],
+  "eval": "ranstringin_gen"
+}
