@@ -53,7 +53,7 @@ class AvlTree:
         if current.right:
             self.to_string_r(current.right)
 
-    def to_string(self):
+    def __repr__(self):
         strepr = ''
         self.to_string_r(self.root)
 
@@ -61,13 +61,13 @@ class AvlTree:
     def test_avl_tree():
         avt = AvlTree()
         avt.insert(20)
-        avt.to_string()
+        repr(avt)
         avt.insert(30)
         avt.insert(10)
-        avt.to_string()
+        repr(avt)
         avt.insert(5)
         avt.insert(15)
-        avt.to_string()
+        repr(avt)
         print('done')
 
 

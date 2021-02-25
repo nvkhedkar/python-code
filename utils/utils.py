@@ -3,6 +3,21 @@ import os, sys, platform, stat
 import json, re
 import logging
 from subprocess import Popen, PIPE, STDOUT
+import functools, time
+
+
+def timer(func):
+    """Decorator to find function run time"""
+    @functools.wraps(func)
+    def wrapper_timer(*args, **kwargs):
+        start_time = time.perf_counter()
+        value = func(*args, **kwargs)
+        end_time = time.perf_counter()
+        run_time = end_time - start_time
+        print(f"Run time: {func.__name__!r} {run_time:.4f} secs")
+        return value
+
+    return wrapper_timer
 
 
 def write_json(dict_, json_file):
@@ -41,6 +56,7 @@ def os_info():
     osinfo['platform.processor'] = platform.processor()
     return osinfo
 
+
 def print_exception_info(e, applog, raise_again=True):
     import traceback, sys
     exc_type, exc_value, exc_traceback = sys.exc_info()
@@ -61,14 +77,14 @@ DEBUG_LEVELV_NUM = 9
 def debugv(self, message, *args, **kws):
     if self.isEnabledFor(DEBUG_LEVELV_NUM):
         # Yes, logger takes its '*args' as 'args'.
-        self._log(DEBUG_LEVELV_NUM, message, args, **kws) 
+        self._log(DEBUG_LEVELV_NUM, message, args, **kws)
 
 
 logging.Logger.debugv = debugv
 logging.addLevelName(DEBUG_LEVELV_NUM, "DEBUGV")
 
 
-def set_custom_logging(log_level_num:int, log_function_name:str, log_function):
+def set_custom_logging(log_level_num: int, log_function_name: str, log_function):
     setattr(logging.Logger, log_function_name, log_function)
     logging.addLevelName(log_level_num, log_function_name.upper)
     return
@@ -80,6 +96,7 @@ def exec_shell_realtime_simple(cmd, cwd, applog, separator=' ; ', timeout=-1, sh
         shl="c:/Windows/system32/cmd.exe"
         separator=" & "
     '''
+
     def kill_process_with_children(parent_pid):
         import psutil
         # parent_pid = 30437   # my example
@@ -107,15 +124,15 @@ def exec_shell_realtime_simple(cmd, cwd, applog, separator=' ; ', timeout=-1, sh
     applog.info('exec_shell_realtime_simple')
     applog.info('shell {}'.format(shl))
     start_time = datetime.utcnow()
-    
+
     p = Popen(separator.join(cmd),  # ['echo Nikhil ; cd /trusolid ; ls ; pwd'],
-            stdout=PIPE, stderr=STDOUT,
-            # env=new_env,
-            executable=shl,
-            shell=True,
-            encoding='utf-8',
-            cwd=cwd
-            )
+              stdout=PIPE, stderr=STDOUT,
+              # env=new_env,
+              executable=shl,
+              shell=True,
+              encoding='utf-8',
+              cwd=cwd
+              )
 
     outlines = []
     stat = 'failure'
@@ -132,7 +149,7 @@ def exec_shell_realtime_simple(cmd, cwd, applog, separator=' ; ', timeout=-1, sh
     return p, outlines, stat
 
 
-def get_directory_size(start_path = '.'):
+def get_directory_size(start_path='.'):
     '''
     Returns directory size in bytes
     '''
