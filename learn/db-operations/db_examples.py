@@ -25,6 +25,15 @@ def simple_table_create():
     engine.execute("CREATE TABLE IF NOT EXISTS myfilms (title text, director text, language text, year text)")
 
 
+from sqlalchemy import Column, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
+
+
+def get_session(engine):
+    db = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=engine))
+    Base = declarative_base(bind=engine)
+
 # engine.connect()
 # print('done')
 

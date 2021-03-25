@@ -1,5 +1,4 @@
 from flask import Flask, jsonify
-
 # import os, sys
 # SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 # sys.path.insert(-1, SCRIPT_DIR)
@@ -25,6 +24,7 @@ def get_shape_info():
 @app.route('/', methods=['POST'])
 def create_shape_info():
     return
+
 
 if __name__ == '__main__':
     app.run()
