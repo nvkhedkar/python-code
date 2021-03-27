@@ -1,0 +1,5 @@
+dramatiq base_case:rabbitmq_broker -p 2
+
+dramatiq base_case:rabbitmq_broker -p 1 --queues easy1
+
+
