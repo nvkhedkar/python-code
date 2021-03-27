@@ -7,7 +7,12 @@ def add(x, y):
     return x + y
 
 
-print(values[2:] + [66])
+# print(values[2:] + [66])
+
+import time
+from datetime import datetime
+timestamp = int(time.mktime(datetime.now().timetuple()))
+print(timestamp)
 
 # while len(values) > 1:
 #     print(f'Values b: {values}')

@@ -20,6 +20,10 @@ def timer(func):
     return wrapper_timer
 
 
+def get_int_timestamp():
+    return int(time.mktime(datetime.datetime.now().timetuple()))
+
+
 def write_json(dict_, json_file):
     import json
     with open(json_file, 'w') as fp:
