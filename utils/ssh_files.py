@@ -57,11 +57,11 @@ class SSHClientCls:
 scc = SSHClientCls()
 scc.run_cmd('pwd')
 scc.run_cmd('ls -lth')
-scc.run_cmd('sudo rm trusolid-worker-app_1.0.0-1.tar.gz')
+scc.run_cmd('sudo rm my-app_1.0.0-1.tar.gz')
 scc.run_cmd('ls -lth')
 scc.open_ftp(use_scp=1)
-scc.upload_files(LOCAL_REPO_PY + '/trusolid-worker-app_1.0.0-1.tar.gz',
-                 '/home/gensteam/trusolid-worker-app_1.0.0-1.tar')
+scc.upload_files(LOCAL_REPO_PY + '/my-app_1.0.0-1.tar.gz',
+                 '/home/nvkhedkar/my-app_1.0.0-1.tar')
 scc.close_ftp()
 scc.run_cmd('ls -lth')
 scc.close_conn()
