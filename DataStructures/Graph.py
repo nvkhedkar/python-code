@@ -34,23 +34,23 @@ class Graph:
     def depth_first_traverse(self, n):
         root = self.nodes[n]
 
-        self.depth_first_in(root, list())
+        self.depth_first_low(root, list())
         return
 
-    def depth_first_in(self, root, visited):
-        print(root.name)
-        visited.append(root.name)
-        for e in root.edges:
+    def depth_first_low(self, node, visited):
+        print(node.name)
+        visited.append(node.name)
+        for e in node.edges:
             if e.name not in visited:
-                self.depth_first_in(e, visited)
+                self.depth_first_low(e, visited)
         return
 
     def breadth_first_traverse(self, n):
         root = self.nodes[n]
-        self.breadth_first_in([root], list())
+        self.breadth_first_low([root], list())
         return
 
-    def breadth_first_in(self, to_visit: list, visited: list):
+    def breadth_first_low(self, to_visit: list, visited: list):
         if len(to_visit) == 0:
             return
         root = to_visit.pop(0)
@@ -59,7 +59,7 @@ class Graph:
         for e in root.edges:
             if e.name not in visited:
                 to_visit.append(e)
-        self.breadth_first_in(to_visit, visited)
+        self.breadth_first_low(to_visit, visited)
         return
 
     def has_cycle(self):
@@ -86,14 +86,14 @@ class Graph:
         visited.add(node.name)
         return False
 
-    def to_string(self):
+    def __str__(self):
         strepr = ''
         for k, v in self.nodes.items():
             strepr += v.to_string() + '\n'
         return strepr
 
-    @staticmethod
-    def testGraph():
+    @classmethod
+    def graph_test(cls):
         g = Graph()
         g.add_node('a')
         g.add_node('b')
@@ -107,17 +107,18 @@ class Graph:
         g.breadth_first_traverse('a')
         return
 
-    @staticmethod
-    def testGraph1():
+    @classmethod
+    def graph_test_1(cls):
         g = Graph()
-        [g.add_node(a) for a in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']]
+        [g.add_node(n) for n in ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']]
         [g.add_edge('a', a) for a in ['b', 'c', 'd']]
         [g.add_edge('c', a) for a in ['e', 'f']]
         [g.add_edge('b', a) for a in ['g']]
         [g.add_edge('e', a) for a in ['h', 'i']]
         [g.add_edge('i', a) for a in ['j']]
-        print(g.to_string())
+        print(str(g))
         g.depth_first_traverse('a')
 
-Graph.testGraph1()
+
+Graph.graph_test_1()
 
