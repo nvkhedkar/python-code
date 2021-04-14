@@ -13,6 +13,8 @@ class Prototype:
 
     def clone(self, name, **attr):
         obj = copy.deepcopy(self._objects[name])
+        # Change some attribute after making a copy of the object
+        # this is optional
         obj.__dict__.update(attr)
         return obj
 
