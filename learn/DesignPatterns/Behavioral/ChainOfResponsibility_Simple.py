@@ -1,3 +1,24 @@
+"""
+We need to keep few important principles in mind while implementing Chain of Responsibility:
+
+1.Each processor in the chain will have its implementation for processing a command
+    In our example above, all processors have their implementation of isAuthorized
+2. Every processor in the chain should have reference to the next processor
+    Above, UsernamePasswordProcessor delegates to OAuthProcessor
+3. Each processor is responsible for delegating to the next processor so beware of dropped commands
+    Again in our example, if the command is an instance of SamlProvider then the request may not get processed and will be unauthorized
+4. Processors should not form a recursive cycle
+    In our example, we don't have a cycle in our chain: UsernamePasswordProcessor -> OAuthProcessor. But, if we explicitly set UsernamePasswordProcessor as next processor of OAuthProcessor, then we end up with a cycle in our chain: UsernamePasswordProcessor -> OAuthProcessor -> UsernamePasswordProcessor. Taking the next processor in the constructor can help with this
+5. Only one processor in the chain handles a given command
+
+Disadvantages:
+1. Mostly, it can get broken easily:
+    if a processor fails to call the next processor, the command gets dropped
+    if a processor calls the wrong processor, it can lead to a cycle
+2. It can create deep stack traces, which can affect performance
+3. It can lead to duplicate code across processors, increasing maintenance
+"""
+
 
 class Handler:
     def __init__(self, successor=None):
