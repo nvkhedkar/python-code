@@ -12,11 +12,11 @@ def get_task_id():
     print(fr, num_digits)
     print(str(dt_obj.timestamp()))
 
-full = "nvk.txt"
-filename = os.path.dirname(full)
-if not filename:
-    print('No directory')
-print(f'Filename: {filename}')
+# full = "nvk.txt"
+# filename = os.path.dirname(full)
+# if not filename:
+#     print('No directory')
+# print(f'Filename: {filename}')
 
 values = [x + 1 for x in range(10)]
 
@@ -29,6 +29,19 @@ def add(x, y):
 
 timestamp = int(time.mktime(datetime.utcnow().timetuple()))
 print(timestamp)
+
+import pandas as pd
+import numpy as np
+
+n_cols = 2
+tarr = np.arange(3*n_cols).reshape(3, n_cols) # , order='F')
+df = pd.DataFrame(tarr, columns=[f'col{x}' for x in range(n_cols)])
+print(df)
+adict = {
+    "pars": tarr.tolist()
+}
+import json
+# print(json.dumps(adict, indent=2))
 
 # while len(values) > 1:
 #     print(f'Values b: {values}')
