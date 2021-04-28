@@ -98,7 +98,7 @@ def generte_contours(i=0):
     return
 
 cont_flg = 0
-def view_genetic(i,scat):
+def view_genetic(i, scat):
     gdata = None
     print(i)
     if(i==83):return
@@ -113,7 +113,7 @@ def view_genetic(i,scat):
 
     np_pars = np.array(gdata['parents'])
     np_pars_r = np_pars.reshape(p, nv, order='F')
-    eval = get_eval(gdata['eval'])
+    eval = get_eval(gdata['eval_func_name'])
     # print(ranges)
     # x = np.arange(ranges[0][0]-1.,ranges[0][1]+2.,0.05)
     # y = np.arange(ranges[1][0]-1.,ranges[1][1]+2.,0.05)
@@ -125,8 +125,9 @@ def view_genetic(i,scat):
     # yp = np.random.uniform(low=-4.11, high=5.11, size=(50,))
     xp = gdata['parents'][0:p]
     yp = gdata['parents'][p:p*nv]
-    for s in scat:
-        s.clear()
+    # for s in scat:
+    #     s.clear()
+    scat
     scat = [gax3.scatter(xp,yp,marker='.',s=15)]
 
     # XP,YP = np.meshgrid(xp,yp)

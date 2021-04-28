@@ -81,11 +81,29 @@ def read_json(full):
     return data
 
 
+def flat_array_to_nd_array(gdata, rows, cols, population, order='F'):
+    n_p = int(gdata[rows])
+    nv = gdata[cols]
+    np_vals = np.array(gdata[population])
+    return np_vals.reshape(n_p, nv, order=order)
+
+
 # gdj = 'h:/nikhil/Development/Python/Projects/Python3_Projects/Genetic/data/gdata.json'
 genetic_data_json = f'{CURR_DIR}/gdata.json'
 
 
-def initialize_genetic_data(m, c, p, of, v, ps, ng, ran, ev):
+def evaluate_parents(i_genr, gdata, population_fitness, np_vals_r, pop_size, n_vars):
+    eval = get_eval(gdata['eval_func_name'])
+    all_vals = [0. for i in range(pop_size)]
+    for i, parent in enumerate(np_vals_r):
+        all_vals[i] = eval(parent)
+    return all_vals
+
+
+eval_function = None
+
+
+def initialize_genetic_data(m, c, p, of, v, ps, ng, ran, ev, labels=None, ev_func=None):
     """
     m: mutation rate
     c: crossover point
@@ -96,6 +114,12 @@ def initialize_genetic_data(m, c, p, of, v, ps, ng, ran, ev):
     ran: Variable value ranges
     ev: evaluation function
     """
+    if ev_func:
+        eval_function = ev_func
+    else:
+        eval_function = evaluate_parents
+    if not labels:
+        labels = [f'var{x+1}'for x in range(v)]
     n_pool = int(p * (1 + of))
     print('n_pool', n_pool)
     gdata = {
@@ -113,7 +137,11 @@ def initialize_genetic_data(m, c, p, of, v, ps, ng, ran, ev):
         'fitness_off': [0. for x in range(int(of * p))],
         'fitness_pool': [0. for x in range(n_pool)],
         'fitness_pars': [0. for x in range(int(p))],
+        'id_offspring': [0. for x in range(int(of * p))],
+        'id_pool': [0. for x in range(n_pool)],
+        'id_parents': [0. for x in range(int(p))],
         'ranges': [x for x in ran],
+        'labels': labels,
         'eval_func_name': ev
     }
     write_json(gdata, genetic_data_json)
@@ -141,35 +169,35 @@ def sort_by_fitness(population, population_fitness, population_size):
     np_vals = np.array(gdata[population])
     np_vals_r = np_vals.reshape(p, nv, order='F')
     np_fits = np.array(gdata[population_fitness])
+    np_locs = np.array(gdata[f'id_{population}'])
     # np_full = np.concatenate((np_vals_r,np.array([np_fits]).T),axis=1)
     # print(np_full[np_full[:,-1].argsort()])
     arr_inds = np_fits.argsort()
     np_vals_sorted = np_vals_r[arr_inds]  # [::-1]
     np_fits_sorted = np_fits[arr_inds]
+    np_locs_sorted = np_locs[arr_inds]
     gdata[population] = list(np_vals_sorted.T.flatten())
     gdata[population_fitness] = list(np_fits_sorted)
+    gdata[f'id_{population}'] = list(np_locs_sorted)
     # print(np_vals_sorted)
     # print(np_vals_sorted.T.flatten())
     write_json(gdata, genetic_data_json)
 
 
-def evaluate_population_fitness(population, population_fitness, pop_size, vals=None):
-    time.sleep(0.1)
+def evaluate_population_fitness(i_genr, population, population_fitness, pop_size, vals=None):
     gdata = read_json(genetic_data_json)
     p = int(gdata[pop_size])
     nv = gdata['n_vars']
     np_vals = np.array(gdata[population])
     np_vals_r = np_vals.reshape(p, nv, order='F')
-    # print(np_vals_r)
-    eval = get_eval(gdata['eval_func_name'])
-    # all_vals = []
-    for i, parent in enumerate(np_vals_r):
-        gdata[population_fitness][i] = eval(parent)
-    # gdata[out] = all_vals[:]
+
+    fitness_values = eval_function(i_genr, gdata, population_fitness, np_vals_r, p, nv)
+    for i, fv in enumerate(fitness_values):
+        gdata[population_fitness][i] = fv
     write_json(gdata, genetic_data_json)
 
 
-def generate_parents_np():
+def generate_parents_np(i):
     gdata = read_json(genetic_data_json)
     xr = gdata['ranges']
     p = gdata['n_pars']
@@ -177,6 +205,7 @@ def generate_parents_np():
     print(gdata['ranges'])
     npranges = np.array(gdata['ranges'])
     ranges = npranges.reshape(int(nv), int(len(gdata['ranges']) / nv))
+    # ranges = npranges.reshape(int(len(gdata['ranges']) / nv), int(nv))
     px1 = np.arange(ranges[0][0], ranges[0][1], (ranges[0][1] - ranges[0][0]) / p)
     px1 = np.random.uniform(ranges[0][0], ranges[0][1], p)
     fin = list(px1)
@@ -224,8 +253,6 @@ def crossover_parents():
         ch2[cp:] = par2[cp:]
         offspr[coff] = ch1
         offspr[coff + 1] = ch2
-        # print('Pars', ip1,ip2,par1,par2)
-        # print('Ch', ip1,ip2,ch1,ch2)
         coff += 2
         if coff == n_off:
             break
@@ -234,7 +261,7 @@ def crossover_parents():
     write_json(gdata, genetic_data_json)
 
 
-def combine():
+def combine_bad():
     gdata = read_json(genetic_data_json)
     p = gdata['n_pars']
     nv = gdata['n_vars']
@@ -242,6 +269,23 @@ def combine():
     gdata['pool'][p * nv:] = gdata['offspring'][:]
     gdata['fitness_pool'][:p] = gdata['fitness_pars'][:]
     gdata['fitness_pool'][p:] = gdata['fitness_off'][:]
+    write_json(gdata, genetic_data_json)
+
+
+def combine(i):
+    gdata = read_json(genetic_data_json)
+    p = gdata['n_pars']
+    n_off = int(gdata['n_offsp'])
+    nv = gdata['n_vars']
+    np_pars_r = np.array(gdata['parents']).reshape(p, nv, order='F')
+    np_off_r = np.array(gdata['offspring']).reshape(n_off, nv, order='F')
+
+    np_pool = np.concatenate((np_pars_r, np_off_r), axis=0)
+    gdata['pool'] = list(np_pool.T.flatten())
+    gdata['fitness_pool'][:p] = gdata['fitness_pars'][:]
+    gdata['fitness_pool'][p:] = gdata['fitness_off'][:]
+    gdata['id_pool'][:p] = gdata['id_parents'][:]
+    gdata['id_pool'][p:] = gdata['id_offspring'][:]
     write_json(gdata, genetic_data_json)
 
 
@@ -255,18 +299,19 @@ def select_new_population():
     npool = gdata['n_pool']
     nv = gdata['n_vars']
     n_off = int(gdata['n_offsp'])
-    np_pars = np.array(gdata['parents'])
-    np_pars_r = np_pars.reshape(p, nv, order='F')
-    np_pool = np.array(gdata['pool'])
-    np_pool_r = np_pool.reshape(npool, nv, order='F')
+    np_pars_r = np.array(gdata['parents']).reshape(p, nv, order='F')
+    np_pool_r = np.array(gdata['pool']).reshape(npool, nv, order='F')
+    np_pool_fitness = np.array(gdata['fitness_pool'])
+    np_pars_fitness = np.array(gdata['fitness_pars'])
 
     new_generation = np.zeros(shape=(p, nv))
-    top_n_pars = int(0.75 * p)
+    top_n_pars = int(0.7 * p)
     # print(0,topn)
     # select to best people from the group
     for i in range(top_n_pars):
         newpar = np.copy(np_pool_r[i])
         new_generation[i] = newpar
+        np_pars_fitness[i] = np_pool_fitness[i]
 
     chosen = []
     # print(topn,p)
@@ -278,12 +323,14 @@ def select_new_population():
         chosen.append(ni)
         newpar = np.copy(np_pool_r[ni])
         new_generation[i] = newpar
+        np_pars_fitness[i] = np_pool_fitness[ni]
     # print(len(newgen.T.flatten()))
     gdata['parents'] = list(new_generation.T.flatten())
+    gdata['fitness_pars'] = list(np_pars_fitness)
     write_json(gdata, genetic_data_json)
 
 
-def mutate_population():
+def mutate_population(i_gen):
     gdata = read_json(genetic_data_json)
     write_json(gdata, './before.json')
     p = gdata['n_pars']
@@ -299,10 +346,37 @@ def mutate_population():
             rai = np.random.randint(0, p * nv)
         chosen.append(rai)
         # print(rai, rai%nv)
-        r_i = rai % nv
+        r_i = int(rai / p)
         mut = np.random.uniform(np_ranges_r[r_i][0], np_ranges_r[r_i][1], 1)
         # print(rai, rai%nv, mut)
+        before = gdata['parents'][rai]
         gdata['parents'][rai] = mut[0]
+        # print(f'{i_gen} bef:{before}, aft:{mut[0]}, rai:{rai}, r_i:{r_i} [{np_ranges_r[r_i][0]}, {np_ranges_r[r_i][1]}]')
+    write_json(gdata, genetic_data_json)
+    return
+
+def mutate_population_keep_top(i_gen, top=2):
+    gdata = read_json(genetic_data_json)
+    write_json(gdata, './before.json')
+    p = gdata['n_pars']
+    nv = gdata['n_vars']
+    mut_rate = int(gdata['mutrate'] * p)
+    np_ranges = np.array(gdata['ranges'])
+    np_ranges_r = np_ranges.reshape(int(nv), int(len(gdata['ranges']) / nv))
+
+    chosen = []
+    for i in range(mut_rate):
+        rai = np.random.randint(0, p * nv)
+        while (rai in chosen) or (rai % p < top):
+            rai = np.random.randint(0, p * nv)
+        chosen.append(rai)
+        # print(rai, rai%nv)
+        r_i = int(rai / p)
+        mut = np.random.uniform(np_ranges_r[r_i][0], np_ranges_r[r_i][1], 1)
+        # print(rai, rai%nv, mut)
+        before = gdata['parents'][rai]
+        gdata['parents'][rai] = mut[0]
+        print(f'{i_gen} bef:{before}, aft:{mut[0]}, rai:{rai}({rai % p}), r_i:{r_i} [{np_ranges_r[r_i][0]}, {np_ranges_r[r_i][1]}]')
     write_json(gdata, genetic_data_json)
     return
 

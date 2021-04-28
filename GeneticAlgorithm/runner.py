@@ -16,10 +16,10 @@ print(BASE_DIR)
 from GeneticAlgorithm.genetic import *
 
 
-def do_genetic():
+def run_genetic_algo():
     population = 50
-    initialize_genetic_data(m=0.12, c=1, p=population, of=0.8, v=3, ps=0.8, ng=20,
-                            ran=[0, 5, 6, 10, 11, 15],
+    initialize_genetic_data(m=0.12, c=1, p=population, of=0.8, v=2, ps=0.8, ng=20,
+                            ran= [-5.11,4.11,-4.11,5.11], #[0, 5, 6, 10],
                             ev='rastringin_gen'
                             # ran=[-5.1, 4, -5.1, 4],  # [-5.11,4.11,-4.11,5.11],
                             # ev='rastringin_gen'
@@ -49,4 +49,4 @@ def do_genetic():
             break
 
 
-do_genetic()
+run_genetic_algo()
