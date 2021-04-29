@@ -16,10 +16,10 @@ app = dash.Dash(__name__)
 app.layout = html.Div(
     [
         html.Div(id='live-update-text'),
-        dcc.Graph(id='live-graph', animate=True),
+        dcc.Graph(id='live-graph', animate=True, animation_options={"frame":{"redraw":True}}),
         dcc.Interval(
             id='interval-component',
-            interval=1000,
+            interval=1.5*1000,
             n_intervals=0
         ),
     ]
@@ -76,8 +76,8 @@ def get_contours():
         gdata = json.load(fp)
         p = int(gdata['n_pars'])
 
-    x = np.arange(-6., 6., 0.05)
-    y = np.arange(-6., 6., 0.05)
+    x = np.arange(-5., 5., 0.05)
+    y = np.arange(-5., 5., 0.05)
     [X, Y] = np.meshgrid(x, y)
 
     eval_func = None
@@ -85,10 +85,10 @@ def get_contours():
         eval_func = tf.rastringin_gen
 
     Z = eval_func([X, Y])
-    return X, Y, Z
+    return X, Y, Z, x, y
 
 
-X, Y, Z = get_contours()
+X, Y, Z, x, y = get_contours()
 print(X.shape, Y.shape, Z.shape)
 
 @app.callback(
@@ -98,18 +98,24 @@ print(X.shape, Y.shape, Z.shape)
 def update_graph_scatter(n):
     ranges, xp, yp, zp, eval_func = read_genetic_data(n)
     fig = go.Figure()
+    fig.add_trace(go.Contour(
+    z=Z, x=x, y=y,
+    # autocontour=False,
+    contours=dict(coloring='lines'),  # , size=1, start=0, end=2),
+    # colorscale='rainbow'
+    ))
     fig.add_trace(go.Scatter(
         x=xp,
         y=yp,
         mode='markers',
-        marker=dict(size=10, opacity=0.5,
+        marker=dict(size=5, # opacity=0.5,
                     line=dict(width=1, color='grey'))
     ))
-    fig.add_trace(go.Contour(
-        z=Z,
-        # x=X,
-        # y=Y
-    ))
+    # fig.add_trace(go.Contour(
+    #     z=Z,
+    #     # x=X,
+    #     # y=Y
+    # ))
     fig.update_layout(width=750, height=750)
 
     return fig

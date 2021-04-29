@@ -72,8 +72,8 @@ def rastringin_gen(xx, n=2, A=1):
     return fx
 
 
-feature_x = np.arange(-5.11, 5.11, 0.01)
-feature_y = np.arange(-5.11, 5.11, 0.01)
+feature_x = np.arange(-5.11, 5.11, 0.05)
+feature_y = np.arange(-5.11, 5.11, 0.05)
 
 # Creating 2-D grid of features
 [X, Y] = np.meshgrid(feature_x, feature_y)
@@ -84,9 +84,15 @@ Z = rastringin_gen([X, Y])
 print(X.shape)
 print(Y.shape)
 print(Z.shape)
-fig = go.Figure(data=
-                go.Contour(x=feature_x, y=feature_y, z=Z,
-                           colorscale='rainbow'
-                           ))
-
+fig = go.Figure()
+# fig.add_trace(
+#     go.Contour(
+#         z=Z1, x=feature_x, y=feature_y,
+#         autocontour=False, contours=dict(coloring='lines', size=1, start=0, end=2),
+#         # colorscale='rainbow'
+#         ))
+fig.add_trace(go.Surface(z=Z, x=feature_x, y=feature_y, opacity=0.2))
+fig.update_layout(title='Rastringin', autosize=False,
+                  width=750, height=750,
+                  margin=dict(l=65, r=50, b=65, t=90))
 fig.show()
