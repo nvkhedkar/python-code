@@ -21,15 +21,16 @@ GENERATIONS = 100
 USE_STOPPING = 0
 N_VARS = 2
 LABELS = ['ref_vol_percent', 'redistribution']
-RANGES = [-5.11, 4.2, -5.11, 4.2] # [10, 90, 5, 70, 0, 7, 20, 45]
+# RANGES = [-5.11, 4.2, -5.11, 4.2]
+RANGES = [-3, 3, -2, 2] # [10, 90, 5, 70, 0, 7, 20, 45]
 # N_VARS = 3
 # LABELS = ['ref_vol_percent', 'redistribution', 'material']
 # RANGES = [10, 90, 5, 70, 0, 7]
 # N_VARS = 2
 # LABELS = ['ref_vol_percent', 'redistribution']
 # RANGES = [10, 90, 5, 70]
-OBJ_FUNC = 'stress'
-EVAL_FUNC = tf.rastringin_gen
+EVAL_FUNC = tf.camel_hump_six
+EVAL_FUNC_NAME = 'camel_hump_six'
 
 
 def function_eval_default(i_genr, gdata, population, np_vals_r, pop_size, n_vars):
@@ -133,7 +134,7 @@ def run_genetic_algo():
     population = POPULATION
     initialize_genetic_data(m=0.12, c=1, p=population, of=0.8, v=N_VARS, ps=0.8, ng=20,
                             ran=RANGES,
-                            ev='rastringin_gen',
+                            ev=EVAL_FUNC_NAME,
                             ev_func=function_eval_default,
                             labels=LABELS
                             # ran=[-5.1, 4, -5.1, 4],  # [-5.11,4.11,-4.11,5.11],

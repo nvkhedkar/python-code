@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from matplotlib.animation import FuncAnimation
 from matplotlib import cm
+import seaborn as sns
 import json
 import GeneticAlgorithm.test_functions as tf
 
@@ -16,13 +17,17 @@ def get_contours():
         gdata = json.load(fp)
         p = int(gdata['n_pars'])
 
-    x = np.arange(-5., 5., 0.05)
-    y = np.arange(-5., 5., 0.05)
+    # x = np.arange(-5., 5., 0.05)
+    # y = np.arange(-5., 5., 0.05)
+    x = np.arange(-2., 2., 0.01)
+    y = np.arange(-2., 2., 0.01)
     [X, Y] = np.meshgrid(x, y)
 
     eval_func = None
     if gdata['eval_func_name'] == 'rastringin_gen':
         eval_func = tf.rastringin_gen
+    elif gdata['eval_func_name'] == 'camel_hump_six':
+        eval_func = tf.camel_hump_six
 
     Z = eval_func([X, Y])
     return X, Y, Z, x, y
@@ -47,6 +52,8 @@ def read_genetic_data(n):
     eval_func = None
     if gdata['eval_func_name'] == 'rastringin_gen':
         eval_func = tf.rastringin_gen
+    elif gdata['eval_func_name'] == 'camel_hump_six':
+        eval_func = tf.camel_hump_six
     # print(ranges)
     # x = np.arange(ranges[0][0]-1.,ranges[0][1]+2.,0.05)
     # y = np.arange(ranges[1][0]-1.,ranges[1][1]+2.,0.05)
@@ -96,7 +103,8 @@ class AnimatedScatter(object):
                                     # c=c, s=s,
                                     vmin=0, vmax=1,
                                     cmap="jet", edgecolor="k")
-        self.ax.axis([-5, 5, -5, 5])
+        # self.ax.axis([-5, 5, -5, 5])
+        self.ax.axis([-2, 2, -2, 2])
         # For FuncAnimation's sake, we need to return the artist we'll be using
         # Note that it expects a sequence of artists, thus the trailing comma.
         return self.scat,
@@ -114,7 +122,7 @@ class AnimatedScatter(object):
 
     def update(self, i):
         ranges, xp, yp, zp, eval_func = read_genetic_data(i % 100)
-        self.scat = self.ax.scatter(xp, yp, s=20,
+        self.scat = self.ax.scatter(xp, yp, s=40,
                                     # c=c, s=s,
                                     vmin=0, vmax=1,
                                     cmap="jet", edgecolor="k", alpha=0.5)

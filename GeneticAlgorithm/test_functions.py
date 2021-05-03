@@ -15,6 +15,12 @@ def camel_hump_six_old(x1, x2):
 
 
 def camel_hump_six(xx):
+    """
+    minima: -1.03316 for
+    Range: [-3, 3, -2, 2]
+    :param xx: minimum x = (0.0898, -0.7126), (-0.0898, 0.7126)
+    :return: function value
+    """
     x1_2 = np.square(xx[0])
     x1_4 = np.square(x1_2)
     x2_2 = np.square(xx[1])
@@ -32,6 +38,7 @@ def f(x, y):
 
 
 def rastringin(x1, x2, n=2, A=0.5):
+
     def calc(x):
         return np.square(x) - A * np.cos(2 * np.pi * x)
 
@@ -40,6 +47,14 @@ def rastringin(x1, x2, n=2, A=0.5):
 
 
 def rastringin_gen(xx, n=2, A=1):
+    """
+    optimum is at 0.0 when all xx = 0
+    range:  [-5.11, 5.11, -5.11, 5.11, ...]
+    :param xx: array of input variables
+    :param n:  number of input variables
+    :param A:
+    :return: function value
+    """
     def calc(xv):
         return np.square(xv) - A * np.cos(2 * np.pi * xv)
 
