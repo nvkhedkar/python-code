@@ -16,25 +16,27 @@ print(BASE_DIR)
 from GeneticAlgorithm.genetic import *
 import copy
 
-POPULATION = 50
-GENERATIONS = 100
+POPULATION = 500
+GENERATIONS = 300
 USE_STOPPING = 0
 N_VARS = 2
 LABELS = ['ref_vol_percent', 'redistribution']
-# RANGES = [-5.11, 4.2, -5.11, 4.2]
-RANGES = [-3, 3, -2, 2] # [10, 90, 5, 70, 0, 7, 20, 45]
+RANGES = [-5.12, 5.12, -5.12, 5.12]
+# RANGES = [-3, 3, -2, 2] # [10, 90, 5, 70, 0, 7, 20, 45]
 # N_VARS = 3
 # LABELS = ['ref_vol_percent', 'redistribution', 'material']
 # RANGES = [10, 90, 5, 70, 0, 7]
 # N_VARS = 2
 # LABELS = ['ref_vol_percent', 'redistribution']
 # RANGES = [10, 90, 5, 70]
-EVAL_FUNC = tf.camel_hump_six
-EVAL_FUNC_NAME = 'camel_hump_six'
+# EVAL_FUNC = tf.camel_hump_six
+# EVAL_FUNC_NAME = 'camel_hump_six'
+EVAL_FUNC = tf.rastringin_gen
+EVAL_FUNC_NAME = 'rastringin_gen'
 
 
 def function_eval_default(i_genr, gdata, population, np_vals_r, pop_size, n_vars):
-    time.sleep(0.05)
+    time.sleep(0.01)
     all_vals = [0. for i in range(pop_size)]
     for i, parent in enumerate(np_vals_r):
         all_vals[i] = EVAL_FUNC(parent)
@@ -147,7 +149,7 @@ def run_genetic_algo():
         if i == 0:
             generate_parents_np(i)
         else:
-            mutate_population(i)
+            mutate_population_readable(i)
         evaluate_population_fitness(i, 'parents', 'fitness_pars', 'n_pars')
         sort_by_fitness('parents', 'fitness_pars', 'n_pars')
         crossover_parents()

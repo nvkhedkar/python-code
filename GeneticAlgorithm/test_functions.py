@@ -46,7 +46,7 @@ def rastringin(x1, x2, n=2, A=0.5):
     return fx
 
 
-def rastringin_gen(xx, n=2, A=1):
+def rastringin_gen(xx, n=2, A=10):
     """
     optimum is at 0.0 when all xx = 0
     range:  [-5.11, 5.11, -5.11, 5.11, ...]

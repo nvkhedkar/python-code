@@ -261,6 +261,36 @@ def crossover_parents():
     write_json(gdata, genetic_data_json)
 
 
+def mutate_population_readable(i_gen):
+    gdata = read_json(genetic_data_json)
+    write_json(gdata, './before.json')
+    p = gdata['n_pars']
+    nv = gdata['n_vars']
+    n_mutate = int(gdata['mutrate'] * p)
+    np_pars = np.array(gdata['parents'])
+    np_pars_r = np_pars.reshape(p, nv, order='F')
+    np_ranges = np.array(gdata['ranges'])
+    np_ranges_r = np_ranges.reshape(int(nv), int(len(gdata['ranges']) / nv))
+
+    chosen = []
+    for i in range(n_mutate):
+        rai = np.random.randint(0, p * 0.8)
+        while rai in chosen:
+            rai = np.random.randint(0, p * 0.8)
+        chosen.append(rai)
+        # print(rai, rai%nv)
+        r_i = np.random.randint(0, nv) # int(rai / p)
+        mut = np.random.uniform(np_ranges_r[r_i][0], np_ranges_r[r_i][1], 1)
+        # print(rai, rai%nv, mut)
+        before = np_pars_r[rai]
+        # print(f'before {i_gen}: {before}')
+        np_pars_r[rai][r_i] = mut[0]
+        # print(f'after {i_gen}: {np_pars_r[rai]}')
+        # print(f'{i_gen} aft:{np_pars_r[rai]} mut:{mut[0]}, rai:{rai}, r_i:{r_i} [{np_ranges_r[r_i][0]}, {np_ranges_r[r_i][1]}]')
+    gdata['parents'] = list(np_pars_r.T.flatten())
+    write_json(gdata, genetic_data_json)
+
+
 def combine_bad():
     gdata = read_json(genetic_data_json)
     p = gdata['n_pars']
@@ -355,7 +385,8 @@ def mutate_population(i_gen):
     write_json(gdata, genetic_data_json)
     return
 
-def mutate_population_keep_top(i_gen, top=2):
+
+def mutate_population_keep_top(i_gen, top=2, exclude_bottom=0.8):
     gdata = read_json(genetic_data_json)
     write_json(gdata, './before.json')
     p = gdata['n_pars']
