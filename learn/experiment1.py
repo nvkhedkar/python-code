@@ -12,23 +12,22 @@ def get_task_id():
     print(fr, num_digits)
     print(str(dt_obj.timestamp()))
 
-# full = "nvk.txt"
-# filename = os.path.dirname(full)
-# if not filename:
-#     print('No directory')
-# print(f'Filename: {filename}')
 
-values = [x + 1 for x in range(10)]
+full = "nvk.txt"
 
 
 def add(x, y):
     return x + y
 
 
-# print(values[2:] + [66])
+print(add('nv-', 'khed'))
+print(add(2, 3))
+print(add(2.3, 3.2))
 
-timestamp = int(time.mktime(datetime.utcnow().timetuple()))
-print(timestamp)
+
+def get_epoch_int_time():
+    timestamp = int(time.mktime(datetime.utcnow().timetuple()))
+    print(timestamp)
 
 import numpy as np
 def numpy_cols():
