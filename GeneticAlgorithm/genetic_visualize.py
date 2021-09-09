@@ -45,6 +45,7 @@ def rastringin_gen(xx,n=2,A=1):
     fx = A*n + sum
     return fx
 
+
 class ShowProgress(object):
     def __init__(self, ax, delta, eval):
         self.x = np.arange(-5.11, 4.11, delta)
@@ -97,6 +98,7 @@ def generte_contours(i=0):
     plt.show()
     return
 
+
 cont_flg = 0
 def view_genetic(i, scat):
     gdata = None
@@ -125,9 +127,8 @@ def view_genetic(i, scat):
     # yp = np.random.uniform(low=-4.11, high=5.11, size=(50,))
     xp = gdata['parents'][0:p]
     yp = gdata['parents'][p:p*nv]
-    # for s in scat:
-    #     s.clear()
-    scat
+    for s in scat:
+        s.clear()
     scat = [gax3.scatter(xp,yp,marker='.',s=15)]
 
     # XP,YP = np.meshgrid(xp,yp)
@@ -136,7 +137,7 @@ def view_genetic(i, scat):
     # gax2.plot_surface(X, Y, Z, cmap=cm.get_cmap('Spectral', 12),
     #                   linewidth=0, alpha=0.5, antialiased=False)
     # gax2.scatter(XP,YP,zp, marker='.',s=15, alpha=1)
-    return scat
+    return scat,
 
 np.random.seed(19680801)
 

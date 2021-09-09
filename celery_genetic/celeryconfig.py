@@ -1,9 +1,7 @@
 from __future__ import absolute_import, unicode_literals
 from kombu import Exchange, Queue
 
-# broker_url = 'amqp://genuser:genuser@10.192.37.191:5672/trusol1'
-broker_url='pyamqp://guest:guest@localhost:5672/genetic'
-#result_backend = 'redis://10.0.0.10/0'
+broker_url='pyamqp://guest:pass@localhost:5672/genetic'
 result_backend = 'redis://localhost/0'
 
 imports = ('geneticapp.tasks',)
