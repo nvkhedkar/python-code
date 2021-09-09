@@ -1,11 +1,45 @@
 import functools
 import time
+import decorator
 
-a = 1
-b = 2.0
-c = 'str1'
+
+a = 1                   # int
+b = 2.0                 # float
+c = 'simple string'     # string
+ls = [a, b, c]          # list
+dt = {
+    str(a): a,
+    str(b): b,
+    str(c): c}          # dictionary
+
+
+def show_type_and_value(aa):
+    print(f"type: {type(aa)}, value:{aa}")
+
+
+def demo_func():
+    print('Hello demo')
+    for i in range(4):
+        if i % 2 == 0:
+            print("even")
+        else:
+            print("odd")
+    print('Bye demo')
+
+
+def i_do_nothing():
+    pass
+
+
+uc = 'str1 \u2602 \u0041'
+u = u'strunicode'
 d = [x for x in range(5)]
-print(f"Data types: {type(a)}, {type(b)}, {type(c)} {type(d)}")
+
+show_type_and_value(a)
+show_type_and_value(b)
+show_type_and_value(c)
+show_type_and_value(ls)
+show_type_and_value(dt)
 
 for i, x in enumerate(d):
     print(f"{i}: {x}")
@@ -13,13 +47,13 @@ for i, x in enumerate(d):
 
 def timer(func):
     """Decorator to find function run time"""
-    @functools.wraps(func)
+    @functools.wraps(func)  # copies func attributes: __name__ __doc__ etc
     def wrapper_timer(*args, **kwargs):
         start_time = time.perf_counter()
+        # Call the function
         value = func(*args, **kwargs)
-        end_time = time.perf_counter()
-        run_time = end_time - start_time
-        print(f"Run time: {func.__name__} {run_time:.4f} secs")
+        run_time = time.perf_counter() - start_time
+        print(f"Run time for {func.__name__!r} is {run_time:.4f} seconds")
         return value
     return wrapper_timer
 
@@ -44,6 +78,9 @@ class Student:
         self.name = n
         self. address = a
 
+    def __del__(self):
+        print("delete object")
+
     def __call__(self, *args, **kwargs):
         self.address = self.address.upper()
         return self
@@ -57,8 +94,6 @@ class Student:
     def __eq__(self, other):
         return self.name == other.name
 
-    def __del__(self):
-        print("delete object")
 
 
 s = Student()

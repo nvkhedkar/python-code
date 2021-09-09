@@ -6,14 +6,19 @@ from flask import Flask, jsonify
 
 app = Flask(__name__)
 
-shapes = dict()
-
 
 @app.route('/', methods=['GET'])
 def hello_rest():
     return jsonify({
         "greeting": "Hello REST World"
     })
+
+
+if __name__ == '__main__':
+    app.run()
+
+
+shapes = dict()
 
 
 @app.route('/shape', methods=['GET'])
@@ -26,5 +31,3 @@ def create_shape_info():
     return
 
 
-if __name__ == '__main__':
-    app.run()

@@ -2,7 +2,7 @@ import dramatiq
 import requests, time, json
 from dramatiq.brokers.rabbitmq import RabbitmqBroker
 
-rabbitmq_broker = RabbitmqBroker(url="amqp://guest:guest@192.168.0.53:5672/dtq1")
+rabbitmq_broker = RabbitmqBroker(url="amqp://guest:pass@localhost:5672/dtq1")
 
 
 @dramatiq.actor(broker=rabbitmq_broker, queue_name='easy1')

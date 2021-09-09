@@ -20,6 +20,94 @@ def timer(func):
     return wrapper_timer
 
 
+def count_calls(func):
+    """decorator to count function calls"""
+    @functools.wraps(func)
+    def wrapper_count_calls(*args, **kwargs):
+        wrapper_count_calls.num_calls += 1
+        print(f"Call {wrapper_count_calls.num_calls} of {func.__name__!r}")
+        return func(*args, **kwargs)
+    wrapper_count_calls.num_calls = 0
+    return wrapper_count_calls
+
+
+def slow_down(_func=None, *, rate=1):
+    """Sleep given amount of seconds before calling the function
+    *, : means all floowing parameters are keyword only
+    function to decorate is only passed in directly if the decorator
+    is called without arguments
+    """
+    def decorator_slow_down(func):
+        @functools.wraps(func)
+        def wrapper_slow_down(*args, **kwargs):
+            time.sleep(rate)
+            return func(*args, **kwargs)
+        return wrapper_slow_down
+
+    if _func is None:
+        '''
+        decorator called with arguments - so function is not passed
+        return inner decorator
+        this will wrap the function later
+        '''
+        return decorator_slow_down
+    else:
+        '''
+        decorator is called without arguments - so function is passed
+        wrap it and return it
+        '''
+        return decorator_slow_down(_func)
+
+
+def slow_down_by(_func=None, rate=1):
+    """
+    same as slow_down - but uses a class internally
+    :param _func:
+    :param rate:
+    :return: decorator
+    """
+    # class as decorator
+    class _SlowDown:
+        def __init__(self, func, rate=0.25):
+            self.func = func
+            self.rate = rate
+            print(f"__init__: {self.func}, {self.rate}")
+
+        def __call__(self, *args, **kwargs):
+            print(f"__call__ {self.rate}")
+            time.sleep(self.rate)
+            return self.func(*args, **kwargs)
+
+    if _func:
+        print(f"func {_func} {rate}")
+        return _SlowDown(_func)
+    else:
+        print(f"No func {_func} {rate}")
+
+        def wrapper(_func):
+            print(f'wrapper {_func}')
+            return _SlowDown(_func, rate)
+        return wrapper
+
+
+class CountCalls:
+    """
+    Decorator class to count function calls
+    use:
+        @CountCalls
+        def some_function():
+    """
+    def __init__(self, func):
+        functools.update_wrapper(self, func)
+        self.func = func
+        self.num_calls = 0
+
+    def __call__(self, *args, **kwargs):
+        self.num_calls += 1
+        print(f"Call {self.num_calls} of {self.func.__name__!r}")
+        return self.func(*args, **kwargs)
+
+
 def get_int_timestamp():
     return int(time.mktime(datetime.datetime.now().timetuple()))
 
