@@ -8,6 +8,8 @@ mkdir pyaf1
 cd pyaf1
 python3.7 -m venv .
 source ./bin/activate
+sudo apt-get install build-essentials
+pip install wheel
 pip install apache-airflow[celery,daskcrypto,postgres,rabbitmq,password,redis,ssh,statsd,mongo,elasticsearch,ftp,sftp,ldap]
 pip install bokeh
 pip install psycopg2-binary
@@ -26,7 +28,7 @@ cd afprojects
 mkdir airflow
 export AIRFLOW_HOME=/home/vagrant/afprojects/airflow
 source ~/pyenvs/pyaf1/bin/activate
-airflow init db
+airflow db init
 ```
 This will create a basic project. To use postgres as backend and CeleryExecutor make for following changes in airflow.cfg:  
 ```
@@ -60,3 +62,13 @@ Start a celery worker
 export AIRFLOW_HOME=/home/vagrant/afprojects/airflow
  airflow celery worker -q default,queue1,queue2 -H ml_pipe_1 -c 4
 ```
+
+
+### Notes
+possible errors  
+ERROR: jinja2 3.0.3 has requirement MarkupSafe>=2.0, but you'll have markupsafe 1.1.1 which is incompatible.  
+ERROR: flask 1.1.4 has requirement click<8.0,>=5.1, but you'll have click 8.0.3 which is incompatible.  
+ERROR: flask 1.1.4 has requirement Jinja2<3.0,>=2.10.1, but you'll have jinja2 3.0.3 which is incompatible.  
+ERROR: flask-appbuilder 3.4.0 has requirement SQLAlchemy<1.4.0, but you'll have sqlalchemy 1.4.27 which is incompatible.  
+ERROR: elasticsearch-dbapi 0.2.6 has requirement elasticsearch<7.14,>7, but you'll have elasticsearch 7.15.2 which is incompatible.  
+ERROR: elasticsearch-dbapi 0.2.6 has requirement packaging==21.0, but you'll have packaging 21.2 which is incompatible.  

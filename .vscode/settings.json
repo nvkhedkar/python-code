@@ -1,3 +1,4 @@
 {
-    "python.pythonPath": "c:\\python\\envs\\pytorch1\\python.exe"
+    "python.pythonPath": "c:\\python\\envs\\tflow1\\python.exe",
+    "jupyter.jupyterServerType": "local"
 }

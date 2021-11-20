@@ -6,10 +6,10 @@ import pandas as pd
 import time, functools
 
 
-db_url = '10.192.39.4:5432'
-db_name = 'saas1'
-db_user = 'guest'
-db_password = 'guest'
+db_url = '192.168.0.87:5432'
+db_name = 'airflow'
+db_user = 'airflow'
+db_password = 'airflow'
 engine = create_engine(f'postgresql+psycopg2://{db_user}:{db_password}@{db_url}/{db_name}')
 Session = sessionmaker(bind=engine)
 
