@@ -26,4 +26,4 @@ task_default_queue = 'default'
 task_default_exchange = 'default'
 task_default_routing_key = 'default'
 
-# celery -A trusolid.tasks worker --loglevel=info -Q trusol.manage -n w1@ubuntu1
+# celery -A nvkproject.tasks worker --loglevel=info -Q gaapp.manage -n w1@ubuntu1

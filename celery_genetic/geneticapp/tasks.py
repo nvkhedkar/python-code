@@ -4,8 +4,8 @@ from celery import Task, group, chord, chain
 from celery.task.control import revoke
 import time,re,random,sys, json
 import numpy as np
-# sys.path.insert(0, '/trusolid/python_scripts/azure1')
-sys.path.insert(0, 'h:/nikhil/Development/Python/Projects/Python3_Projects/Genetic')
+import os
+sys.path.insert(0, os.getenv(GENETIC_ROOT_PATH, '.'))
 import genetic as ga
 
 
@@ -40,7 +40,7 @@ def init(self, meta=None):
 	# fullga.append(evaluate.s(meta).set(queue='genetic.common'))
 	# res = chain(fullga)()
 # app.send_task(new_task, (x, y, meta),
-#               queue='trusol.' + new_task,
+#               queue='gaapp.' + new_task,
 #               routing_key=new_key)
 	return
 

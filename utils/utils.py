@@ -217,7 +217,7 @@ def exec_shell_realtime_simple(cmd, cwd, applog, separator=' ; ', timeout=-1, sh
     applog.info('shell {}'.format(shl))
     start_time = datetime.utcnow()
 
-    p = Popen(separator.join(cmd),  # ['echo Nikhil ; cd /trusolid ; ls ; pwd'],
+    p = Popen(separator.join(cmd),  # ['echo Nikhil ; cd /mydir ; ls ; pwd'],
               stdout=PIPE, stderr=STDOUT,
               # env=new_env,
               executable=shl,
