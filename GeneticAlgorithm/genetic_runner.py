@@ -1,10 +1,4 @@
 import os, re, sys
-import matplotlib.cm as cm
-import matplotlib.pyplot as plt
-import math
-import numpy as np
-# from threading import Thread
-import time
 import json
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 FILE_NAME = os.path.basename(__file__)
@@ -15,22 +9,14 @@ sys.path.insert(-1, BASE_DIR)
 print(BASE_DIR)
 from GeneticAlgorithm.genetic import *
 import copy
+import GeneticAlgorithm.test_functions as tf
 
 POPULATION = 500
 GENERATIONS = 300
-USE_STOPPING = 0
+USE_STOPPING_CRITERIA = 0
 N_VARS = 2
-LABELS = ['ref_vol_percent', 'redistribution']
+LABELS = ['label1', 'label2']
 RANGES = [-5.12, 5.12, -5.12, 5.12]
-# RANGES = [-3, 3, -2, 2] # [10, 90, 5, 70, 0, 7, 20, 45]
-# N_VARS = 3
-# LABELS = ['ref_vol_percent', 'redistribution', 'material']
-# RANGES = [10, 90, 5, 70, 0, 7]
-# N_VARS = 2
-# LABELS = ['ref_vol_percent', 'redistribution']
-# RANGES = [10, 90, 5, 70]
-# EVAL_FUNC = tf.camel_hump_six
-# EVAL_FUNC_NAME = 'camel_hump_six'
 EVAL_FUNC = tf.rastringin_gen
 EVAL_FUNC_NAME = 'rastringin_gen'
 
@@ -159,7 +145,7 @@ def run_genetic_algo():
         select_new_population()
 
         gdata = process_results(i)
-        if USE_STOPPING:
+        if USE_STOPPING_CRITERIA:
             currav = np.average(gdata['fitness_pars'][0:int(0.05 * population)])
             if abs(currav - last) <= conv:
                 diff += 1
@@ -167,8 +153,6 @@ def run_genetic_algo():
             last = currav
             if diff >= 5:
                 break
-
-
 
 
 run_genetic_algo()

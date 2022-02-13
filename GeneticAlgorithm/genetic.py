@@ -197,7 +197,7 @@ def evaluate_population_fitness(i_genr, population, population_fitness, pop_size
     write_json(gdata, genetic_data_json)
 
 
-def generate_parents_np(i):
+def generate_parents_np(i=0):
     gdata = read_json(genetic_data_json)
     xr = gdata['ranges']
     p = gdata['n_pars']
@@ -261,7 +261,7 @@ def crossover_parents():
     write_json(gdata, genetic_data_json)
 
 
-def mutate_population_readable(i_gen):
+def mutate_population_readable(i_gen=0):
     gdata = read_json(genetic_data_json)
     write_json(gdata, './before.json')
     p = gdata['n_pars']
@@ -302,7 +302,7 @@ def combine_bad():
     write_json(gdata, genetic_data_json)
 
 
-def combine(i):
+def combine(i=0):
     gdata = read_json(genetic_data_json)
     p = gdata['n_pars']
     n_off = int(gdata['n_offsp'])
@@ -360,7 +360,7 @@ def select_new_population():
     write_json(gdata, genetic_data_json)
 
 
-def mutate_population(i_gen):
+def mutate_population(i_gen=0):
     gdata = read_json(genetic_data_json)
     write_json(gdata, './before.json')
     p = gdata['n_pars']
