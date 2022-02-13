@@ -3,9 +3,9 @@ from flask import request
 from flask_caching import Cache
 import time, datetime
 
-import saas_training.server_ex1.caching as rc
-import saas_training.server_ex1.db_shapes as dbs
-from saas_training.saas_workers.saas_job import simple_task
+import my_saas_python_class.server_ex1.caching as rc
+import my_saas_python_class.server_ex1.db_shapes as dbs
+from my_saas_python_class.saas_workers.saas_job import simple_task
 
 config = {
     # "DEBUG": True,          # some Flask specific configs

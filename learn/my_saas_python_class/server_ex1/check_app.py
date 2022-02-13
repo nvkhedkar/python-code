@@ -35,8 +35,8 @@ def check_db():
     print(ts, datetime.datetime.fromtimestamp(int(ts)).strftime('%c'), msg)
 
 
-import saas_training.server_ex1.caching as rc
-import saas_training.server_ex1.db_shapes as dbs
+import my_saas_python_class.server_ex1.caching as rc
+import my_saas_python_class.server_ex1.db_shapes as dbs
 
 
 def compare_performance():

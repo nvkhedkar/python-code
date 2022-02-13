@@ -1,0 +1,9 @@
+export FLASK_APP=app
+export FLASK_RUN_PORT=8080
+
+set FLASK_APP=app
+set FLASK_RUN_PORT=8080
+
+waitress-serve --port=8080 --host=127.0.0.1 my_saas_python_class.server_ex1.app:app
+
+dramatiq my_saas_python_class.saas_workers.saas_job:broker -p 1 -t 1 --queues cs-easy-1
