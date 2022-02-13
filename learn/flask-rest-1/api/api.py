@@ -17,3 +17,4 @@ class TodoSimple(Resource):
     def put(self, todo_id):
         todos[todo_id] = todo_id
         return {todo_id: todos[todo_id]}
+
