@@ -14,10 +14,7 @@ import sys
 sys.path.insert(-1, CURR_DIR)
 sys.path.insert(-1, BASE_DIR)
 import GeneticAlgorithm.test_functions as tf
-
-class Visualization:
-    def __init__(self):
-        self.a = None
+import GeneticAlgorithm.genetic_data as gd
 
 
 def generte_contours(eval=None):
@@ -32,11 +29,6 @@ def generte_contours(eval=None):
     plt.title('Minima ' + str(eval(0, 0)))
     plt.show()
     return
-    # plt.plot(X, Y, marker='.',linestyle='none')
-    # print(len(X),len(Y))
-    # print(y.__len__(), x.__len__())
-    # print(x,y)
-
     points = np.zeros(shape=(len(x) * len(y), 2))
     vals = np.zeros(shape=(len(x) * len(y)))
     print(points)
@@ -50,18 +42,6 @@ def generte_contours(eval=None):
     print(points, np.min(vals), np.max(vals))
 
 
-# plt.show()
-
-
-class Genetic:
-    def __init__(self, p, o, mutrate=0.05):
-        self.a = None
-
-    @staticmethod
-    def generate_parents(self, xrange, yrange, p):
-        return
-
-
 def get_eval(e):
     if e == 'rastringin_gen':
         return tf.rastringin_gen
@@ -69,27 +49,11 @@ def get_eval(e):
         return tf.camel_hump_six
 
 
-def write_json(data, full):
-    with open(full, 'w') as fp:
-        json.dump(data, fp, indent=2)
-
-
-def read_json(full):
-    data = None
-    with open(full, 'r') as fp:
-        data = json.load(fp)
-    return data
-
-
 def flat_array_to_nd_array(gdata, rows, cols, population, order='F'):
     n_p = int(gdata[rows])
     nv = gdata[cols]
     np_vals = np.array(gdata[population])
     return np_vals.reshape(n_p, nv, order=order)
-
-
-# gdj = 'h:/nikhil/Development/Python/Projects/Python3_Projects/Genetic/data/gdata.json'
-genetic_data_json = f'{CURR_DIR}/gdata.json'
 
 
 def evaluate_parents(i_genr, gdata, population_fitness, np_vals_r, pop_size, n_vars):
@@ -100,7 +64,9 @@ def evaluate_parents(i_genr, gdata, population_fitness, np_vals_r, pop_size, n_v
     return all_vals
 
 
-eval_function = None
+eval_function = evaluate_parents
+read_data_function = gd.read_genetic_data
+write_data_function = gd.write_genetic_data
 
 
 def initialize_genetic_data(m, c, p, of, v, ps, ng, ran, ev, labels=None, ev_func=None):
@@ -116,8 +82,6 @@ def initialize_genetic_data(m, c, p, of, v, ps, ng, ran, ev, labels=None, ev_fun
     """
     if ev_func:
         eval_function = ev_func
-    else:
-        eval_function = evaluate_parents
     if not labels:
         labels = [f'var{x+1}'for x in range(v)]
     n_pool = int(p * (1 + of))
@@ -144,11 +108,11 @@ def initialize_genetic_data(m, c, p, of, v, ps, ng, ran, ev, labels=None, ev_fun
         'labels': labels,
         'eval_func_name': ev
     }
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
 
 def generate_parents_old():
-    gdata = read_json(genetic_data_json)
+    gdata = read_data_function()
     xr = gdata['ranges']
     p = gdata['n_pars']
     nv = gdata['n_vars']
@@ -157,13 +121,13 @@ def generate_parents_old():
         x = np.arange(rng[0], rng[1], (rng[1] - rng[0]) / p)
         gdata['parents'][i] = list(x)
     print(len(gdata['pool']))
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
     # y = np.arange(xr[2],xr[3],(xr[3]-xr[2])/p)
     return
 
 
 def sort_by_fitness(population, population_fitness, population_size):
-    gdata = read_json(genetic_data_json)
+    gdata = read_data_function()
     p = gdata[population_size]
     nv = gdata['n_vars']
     np_vals = np.array(gdata[population])
@@ -181,11 +145,11 @@ def sort_by_fitness(population, population_fitness, population_size):
     gdata[f'id_{population}'] = list(np_locs_sorted)
     # print(np_vals_sorted)
     # print(np_vals_sorted.T.flatten())
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
 
 def evaluate_population_fitness(i_genr, population, population_fitness, pop_size, vals=None):
-    gdata = read_json(genetic_data_json)
+    gdata = read_data_function()
     p = int(gdata[pop_size])
     nv = gdata['n_vars']
     np_vals = np.array(gdata[population])
@@ -194,19 +158,19 @@ def evaluate_population_fitness(i_genr, population, population_fitness, pop_size
     fitness_values = eval_function(i_genr, gdata, population_fitness, np_vals_r, p, nv)
     for i, fv in enumerate(fitness_values):
         gdata[population_fitness][i] = fv
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
 
 def generate_parents_np(i=0):
-    gdata = read_json(genetic_data_json)
-    xr = gdata['ranges']
+    gdata = read_data_function()
+    # xr = gdata['ranges']
     p = gdata['n_pars']
     nv = gdata['n_vars']
     print(gdata['ranges'])
     npranges = np.array(gdata['ranges'])
     ranges = npranges.reshape(int(nv), int(len(gdata['ranges']) / nv))
     # ranges = npranges.reshape(int(len(gdata['ranges']) / nv), int(nv))
-    px1 = np.arange(ranges[0][0], ranges[0][1], (ranges[0][1] - ranges[0][0]) / p)
+    # px1 = np.arange(ranges[0][0], ranges[0][1], (ranges[0][1] - ranges[0][0]) / p)
     px1 = np.random.uniform(ranges[0][0], ranges[0][1], p)
     fin = list(px1)
     # print('fin',fin)
@@ -217,13 +181,11 @@ def generate_parents_np(i=0):
         # print('x',x)
         fin.extend(list(x))
     gdata['parents'] = fin[:]
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
-
-# print(ranges)
 
 def crossover_parents():
-    gdata = read_json(genetic_data_json)
+    gdata = read_data_function()
     cp = gdata['crossover_point']
     n_pars = gdata['n_pars']
     nv = gdata['n_vars']
@@ -258,12 +220,12 @@ def crossover_parents():
             break
 
     gdata['offspring'] = list(offspr.T.flatten())
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
 
 def mutate_population_readable(i_gen=0):
-    gdata = read_json(genetic_data_json)
-    write_json(gdata, './before.json')
+    gdata = read_data_function()
+    gd.write_json(gdata, './before.json')
     p = gdata['n_pars']
     nv = gdata['n_vars']
     n_mutate = int(gdata['mutrate'] * p)
@@ -288,22 +250,11 @@ def mutate_population_readable(i_gen=0):
         # print(f'after {i_gen}: {np_pars_r[rai]}')
         # print(f'{i_gen} aft:{np_pars_r[rai]} mut:{mut[0]}, rai:{rai}, r_i:{r_i} [{np_ranges_r[r_i][0]}, {np_ranges_r[r_i][1]}]')
     gdata['parents'] = list(np_pars_r.T.flatten())
-    write_json(gdata, genetic_data_json)
-
-
-def combine_bad():
-    gdata = read_json(genetic_data_json)
-    p = gdata['n_pars']
-    nv = gdata['n_vars']
-    gdata['pool'][:p * nv] = gdata['parents'][:]
-    gdata['pool'][p * nv:] = gdata['offspring'][:]
-    gdata['fitness_pool'][:p] = gdata['fitness_pars'][:]
-    gdata['fitness_pool'][p:] = gdata['fitness_off'][:]
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
 
 def combine(i=0):
-    gdata = read_json(genetic_data_json)
+    gdata = read_data_function()
     p = gdata['n_pars']
     n_off = int(gdata['n_offsp'])
     nv = gdata['n_vars']
@@ -316,7 +267,7 @@ def combine(i=0):
     gdata['fitness_pool'][p:] = gdata['fitness_off'][:]
     gdata['id_pool'][:p] = gdata['id_parents'][:]
     gdata['id_pool'][p:] = gdata['id_offspring'][:]
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
 
 def select_new_population():
@@ -324,7 +275,7 @@ def select_new_population():
     Selects new parents from combined parents and offspring
     :return:
     """
-    gdata = read_json(genetic_data_json)
+    gdata = read_data_function()
     p = gdata['n_pars']
     npool = gdata['n_pool']
     nv = gdata['n_vars']
@@ -357,12 +308,12 @@ def select_new_population():
     # print(len(newgen.T.flatten()))
     gdata['parents'] = list(new_generation.T.flatten())
     gdata['fitness_pars'] = list(np_pars_fitness)
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
 
 
 def mutate_population(i_gen=0):
-    gdata = read_json(genetic_data_json)
-    write_json(gdata, './before.json')
+    gdata = read_data_function()
+    gd.write_json(gdata, './before.json')
     p = gdata['n_pars']
     nv = gdata['n_vars']
     mut_rate = int(gdata['mutrate'] * p)
@@ -382,13 +333,13 @@ def mutate_population(i_gen=0):
         before = gdata['parents'][rai]
         gdata['parents'][rai] = mut[0]
         # print(f'{i_gen} bef:{before}, aft:{mut[0]}, rai:{rai}, r_i:{r_i} [{np_ranges_r[r_i][0]}, {np_ranges_r[r_i][1]}]')
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
     return
 
 
 def mutate_population_keep_top(i_gen, top=2, exclude_bottom=0.8):
-    gdata = read_json(genetic_data_json)
-    write_json(gdata, './before.json')
+    gdata = read_data_function()
+    gd.write_json(gdata, './before.json')
     p = gdata['n_pars']
     nv = gdata['n_vars']
     mut_rate = int(gdata['mutrate'] * p)
@@ -408,25 +359,5 @@ def mutate_population_keep_top(i_gen, top=2, exclude_bottom=0.8):
         before = gdata['parents'][rai]
         gdata['parents'][rai] = mut[0]
         print(f'{i_gen} bef:{before}, aft:{mut[0]}, rai:{rai}({rai % p}), r_i:{r_i} [{np_ranges_r[r_i][0]}, {np_ranges_r[r_i][1]}]')
-    write_json(gdata, genetic_data_json)
+    write_data_function(gdata)
     return
-
-
-# time.sleep(0.05)
-
-# do_crossover()
-
-def try_numpy():
-    arr = np.arange(1, 13, 1)
-    larr = list(arr)
-    print(arr)
-    ar = np.array(larr)
-    r1 = ar.reshape(6, 2, order='F')
-    print(r1)
-    r2 = ar.reshape(6, 2)
-    print(r2)
-    print(list(r2), [[6, 8], [7, 9]])
-# generte_contours(rastringin)
-# print(rastringin(0,0))
-
-# try_numpy()

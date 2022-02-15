@@ -20,9 +20,11 @@ RANGES = [-5.12, 5.12, -5.12, 5.12]
 EVAL_FUNC = tf.rastringin_gen
 EVAL_FUNC_NAME = 'rastringin_gen'
 
+RESULTS = f'{CURR_DIR}/results.txt'
+
 
 def function_eval_default(i_genr, gdata, population, np_vals_r, pop_size, n_vars):
-    time.sleep(0.01)
+    # time.sleep(0.00)
     all_vals = [0. for i in range(pop_size)]
     for i, parent in enumerate(np_vals_r):
         all_vals[i] = EVAL_FUNC(parent)
@@ -30,7 +32,7 @@ def function_eval_default(i_genr, gdata, population, np_vals_r, pop_size, n_vars
 
 
 def evaluate_population_fitness(i_genr, population, population_fitness, pop_size, vals=None):
-    gdata = read_json(genetic_data_json)
+    gdata = gd.read_genetic_data()
     p = int(gdata[pop_size])
     nv = gdata['n_vars']
     np_vals = np.array(gdata[population])
@@ -41,14 +43,14 @@ def evaluate_population_fitness(i_genr, population, population_fitness, pop_size
     for i, fv in enumerate(fitness_values):
         gdata[population_fitness][i] = fv
         gdata[f'id_{population}'][i] = f'gen{i_genr}_{population}{i}'
-    write_json(gdata, genetic_data_json)
+    gd.write_genetic_data(gdata)
 
 
 best_results = {}
 
 
 def write_to_result_file(i, gdata):
-    with open('./results.txt', 'a') as f:
+    with open(RESULTS, 'a') as f:
         p = gdata['n_pars']
         nv = gdata['n_vars']
         np_pars_r = np.array(gdata['parents']).reshape(p, nv, order='F')
@@ -102,23 +104,23 @@ def get_readable_gdata(gdata):
 
 
 def process_results(i):
-    gdata = read_json(genetic_data_json)
+    gdata = gd.read_genetic_data()
     # print('-' * 60)
     # print(i, gdata['fitness_pars'][0:5])
     # print('=' * 90)
     keep_best_results(i, gdata)
     gdata['best_results'] = best_results
 
-    write_json(gdata, './anim/for_anim' + str(i) + '.json')
-    write_json(get_readable_gdata(gdata), './anim/to_read_' + str(i) + '.json')
+    gd.write_json(gdata, './anim/for_anim' + str(i) + '.json')
+    gd.write_json(get_readable_gdata(gdata), './anim/to_read_' + str(i) + '.json')
 
     write_to_result_file(i, gdata)
     return gdata
 
 
 def run_genetic_algo():
-    if os.path.exists('./results.txt'):
-        os.unlink('./results.txt')
+    if os.path.exists(RESULTS):
+        os.unlink(RESULTS)
     population = POPULATION
     initialize_genetic_data(m=0.12, c=1, p=population, of=0.8, v=N_VARS, ps=0.8, ng=20,
                             ran=RANGES,

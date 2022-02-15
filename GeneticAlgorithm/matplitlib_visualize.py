@@ -54,15 +54,6 @@ def read_genetic_data(n):
         eval_func = tf.rastringin_gen
     elif gdata['eval_func_name'] == 'camel_hump_six':
         eval_func = tf.camel_hump_six
-    # print(ranges)
-    # x = np.arange(ranges[0][0]-1.,ranges[0][1]+2.,0.05)
-    # y = np.arange(ranges[1][0]-1.,ranges[1][1]+2.,0.05)
-    # X, Y = np.meshgrid(x, y)
-    # Z = rastringin(X, Y)
-    # gax1.contour(X,Y,Z,[x*x/32 for x in range(1,50)],linewidths=0.25)
-
-    # xp = np.random.uniform(low=-5.11, high=4.11, size=(50,))
-    # yp = np.random.uniform(low=-4.11, high=5.11, size=(50,))
     xp = gdata['parents'][0:p]
     yp = gdata['parents'][p:p * nv]
     zp = gdata['fitness_pars']
