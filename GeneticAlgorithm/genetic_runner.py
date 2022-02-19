@@ -3,7 +3,6 @@ import json
 SCRIPT_DIR = os.path.dirname(os.path.realpath(__file__))
 FILE_NAME = os.path.basename(__file__)
 BASE_DIR = os.path.dirname(SCRIPT_DIR)
-DATA_DIR = f'{BASE_DIR}/data_pyworker/genetic_demo'
 sys.path.insert(-1, SCRIPT_DIR)
 sys.path.insert(-1, BASE_DIR)
 print(BASE_DIR)
