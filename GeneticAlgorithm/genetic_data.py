@@ -19,9 +19,9 @@ def read_json(full):
 
 def read_genetic_data():
     """
-    This reads data from disk
+    This function reads data from disk
     Modify this function to read from:
-    Cache, Blob etc
+    Cache, db, Blob etc, to run in distributed setting
     """
     return read_json(genetic_data_json)
 
@@ -30,6 +30,6 @@ def write_genetic_data(gdata):
     """
     This writes data to disk
     Modify this function to write to:
-    Cache, Blob etc
+    Cache, db, Blob etc, to run in distributed setting
     """
     write_json(gdata, genetic_data_json)

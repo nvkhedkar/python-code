@@ -15,23 +15,33 @@ POPULATION = 500
 GENERATIONS = 300
 USE_STOPPING_CRITERIA = 0
 N_VARS = 2
-LABELS = ['label1', 'label2']
+VARIABLE_LABELS = ['label1', 'label2']
 RANGES = [-5.12, 5.12, -5.12, 5.12]
+# Evaluation function - test functions are in GeneticAlgorithm.test_functions 
+# Or define your own
 EVAL_FUNC = tf.rastringin_gen
 EVAL_FUNC_NAME = 'rastringin_gen'
 
 RESULTS = f'{CURR_DIR}/results.txt'
+best_results = {}
 
 
 def function_eval_default(i_genr, gdata, population, np_vals_r, pop_size, n_vars):
+    """
+    Evaluate objective function for entire population
+    """
     # time.sleep(0.00)
     all_vals = [0. for i in range(pop_size)]
     for i, parent in enumerate(np_vals_r):
+        # Evaluate objective function for single gene
         all_vals[i] = EVAL_FUNC(parent)
     return all_vals
 
 
 def evaluate_population_fitness(i_genr, population, population_fitness, pop_size, vals=None):
+    """
+    Evaluate population and store data
+    """
     gdata = gd.read_genetic_data()
     p = int(gdata[pop_size])
     nv = gdata['n_vars']
@@ -46,9 +56,6 @@ def evaluate_population_fitness(i_genr, population, population_fitness, pop_size
     gd.write_genetic_data(gdata)
 
 
-best_results = {}
-
-
 def write_to_result_file(i, gdata):
     with open(RESULTS, 'a') as f:
         p = gdata['n_pars']
@@ -61,7 +68,7 @@ def write_to_result_file(i, gdata):
             vars = np_pars_r[i]
             var_str = ''
             # for j,var in enumerate(vars):
-            #     var_str += f"{gdata['labels'][j]}: {var}, "
+            #     var_str += f"{gdata['VARIABLE_LABELS'][j]}: {var}, "
             # print(np_pars_r[i], fitness)
             f.write(f"\t{var_str} Value: {fitness}\n")
         f.write(f"{json.dumps(best_results, indent=2)}\n")
@@ -104,6 +111,9 @@ def get_readable_gdata(gdata):
 
 
 def process_results(i):
+    """
+    Add any result postprocessing here
+    """
     gdata = gd.read_genetic_data()
     # print('-' * 60)
     # print(i, gdata['fitness_pars'][0:5])
@@ -119,14 +129,33 @@ def process_results(i):
 
 
 def run_genetic_algo():
+    """
+    Run the genetic algorithm
+    m: mutation rate
+    c: crossover point
+    p: initial population
+    of: ratio of offspring to population
+    ps: probability of parent selection
+    ng: number of genes
+    ran: Variable value ranges
+    ev: evaluation function name
+    ev_func: Evaluation function
+    labels: Variable names
+    """
     if os.path.exists(RESULTS):
         os.unlink(RESULTS)
     population = POPULATION
-    initialize_genetic_data(m=0.12, c=1, p=population, of=0.8, v=N_VARS, ps=0.8, ng=20,
+    initialize_genetic_data(m=0.12, 
+                            c=1, 
+                            p=population, 
+                            of=0.8, 
+                            v=N_VARS, 
+                            ps=0.8, 
+                            ng=20,
                             ran=RANGES,
                             ev=EVAL_FUNC_NAME,
                             ev_func=function_eval_default,
-                            labels=LABELS
+                            labels=VARIABLE_LABELS
                             # ran=[-5.1, 4, -5.1, 4],  # [-5.11,4.11,-4.11,5.11],
                             # ev='rastringin_gen'
                             )  # 'rastringin_gen') camel_hump_six
